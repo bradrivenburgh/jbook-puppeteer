@@ -1,17 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import App from './App';
 
-const App = () => {
-  return (
-    <div>
-      <textarea>
-        <div>
-          <button>Submit</button>
-        </div>
-      </textarea>
-      <pre></pre>
-    </div>
-  );
-};
-
-ReactDOM.render(<App />, document.querySelector('#root'));
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.querySelector('#root')
+);
