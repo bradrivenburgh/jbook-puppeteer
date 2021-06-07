@@ -6,7 +6,7 @@ const fileCache = localforage.createInstance({
   name: 'filecache',
 });
 
-export const unpkgPathPlugin = () => {
+export const unpkgPathPlugin = (inputCode: string) => {
   return {
     name: 'unpkg-path-plugin', //"name" is primarily for debugging
     setup(build: esbuild.PluginBuild) {
@@ -43,11 +43,7 @@ export const unpkgPathPlugin = () => {
           // this object is returned instead of index.js
           return {
             loader: 'jsx',
-            contents: `
-              // esbuild parses import statements and restarts build process: onResolve=>onLoad
-              import axios from 'axios'; 
-              console.log(axios);
-            `,
+            contents: inputCode,
           };
         }
 

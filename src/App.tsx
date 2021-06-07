@@ -27,7 +27,7 @@ const App = () => {
       entryPoints: ['index.js'], // first file to be bundled in application
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin()],
+      plugins: [unpkgPathPlugin(input)],
       define: {
         'process.env.NODE_ENV': '"production"', // define variable as "production" str
         global: 'window', // replace instances of 'global' var with 'window' var (browser global)
