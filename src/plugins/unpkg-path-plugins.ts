@@ -1,5 +1,10 @@
 import * as esbuild from 'esbuild-wasm';
 import axios from 'axios';
+import localforage from 'localforage';
+
+const fileCache = localforage.createInstance({
+  name: 'filecache',
+});
 
 export const unpkgPathPlugin = () => {
   return {
@@ -40,8 +45,8 @@ export const unpkgPathPlugin = () => {
             loader: 'jsx',
             contents: `
               // esbuild parses import statements and restarts build process: onResolve=>onLoad
-              import React, { useState } from 'react'; 
-              console.log(React, useState);
+              import axios from 'axios'; 
+              console.log(axios);
             `,
           };
         }
@@ -50,12 +55,29 @@ export const unpkgPathPlugin = () => {
         // it's much more compact and .get() doesn't require you to know
         // if the format of the data being returned (text vs. JSON)
 
+        // Checked to see if we have already fetched this file
+        // and if it is in the cache
+        const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
+          args.path
+        );
+
+        // if so, return it immediately
+        if (cachedResult) {
+          return cachedResult;
+        }
+
         const { data, request } = await axios.get(args.path);
-        return {
+
+        const result: esbuild.OnLoadResult = {
           loader: 'jsx',
           contents: data,
           resolveDir: new URL('./', request.responseURL).pathname,
         };
+
+        // store response in cache
+        await fileCache.setItem(args.path, result);
+
+        return result;
 
         // Implemented with fetch API
 
