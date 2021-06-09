@@ -40,19 +40,18 @@ describe('App', () => {
     }
 
     inputText.type('1 + 1');
-    await sleep(250);
+    await sleep(1000);
     const inputTextValue = await inputText.evaluate((el) => el.textContent);
     expect(inputTextValue).toBe('1 + 1');
 
     btn.click();
     await sleep(1000);
 
-    let expected = "\"(() => {\\n  // a:index.js\\n  1 + 1;\\n})();\\n\"";
-
+    let expected = '"(() => {\\n  // a:index.js\\n  1 + 1;\\n})();\\n"';
     let codeTextValue: string | null = JSON.stringify(
       await code.evaluate((el) => el.textContent)
     );
-    await sleep(250);
+    await sleep(500);
     expect(codeTextValue).toBe(expected);
   });
 
