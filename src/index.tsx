@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Pupp from './Pupp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Pupp />
   </React.StrictMode>,
   document.querySelector('#root')
 );

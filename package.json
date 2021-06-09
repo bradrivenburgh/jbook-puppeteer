@@ -6,7 +6,6 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
-    "@types/jest": "^26.0.23",
     "@types/node": "^12.20.14",
     "@types/react": "^17.0.9",
     "@types/react-dom": "^17.0.6",
@@ -22,8 +21,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "jest",
+    "eject": "react-scripts eject",
+    "ci": "BROWSER=none PORT=3000 start-server-and-test start http://localhost:3000 test"
   },
   "eslintConfig": {
     "extends": [
@@ -42,5 +42,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^5.4.3",
+    "jest": "^26.6.0",
+    "puppeteer": "^10.0.0",
+    "start-server-and-test": "^1.12.5",
+    "ts-jest": "^26.5.6",
+    "ts-node": "^10.0.0"
   }
 }
