@@ -1,37 +1,60 @@
-import { render, screen } from '../test-utils/testing-library-utils';
-import App from '../App';
-import userEvent from '@testing-library/user-event';
+import puppeteer from 'puppeteer';
 
-/*
-  The tests below initially worked, but using the "esbuild-wasm" transpiler
-  with the "wasmURL" option throws the following error:
-    // "Error: The "wasmURL" option only works in the browser"
-  
+let browser: puppeteer.Browser | undefined;
+let page: puppeteer.Page | undefined;
 
-*/
+const sleep = async (ms: number) =>
+  await new Promise((res) => setTimeout(res, ms));
 
-describe.skip('App', () => {
-  it('renders without crashing', () => {
-    render(<App />);
+beforeAll(async () => {
+  browser = await puppeteer.launch({
+    headless: true,
   });
-  it('displays a textarea, "submit" button, and preformatted code output', () => {
-    render(<App />);
-    const textarea = screen.getByRole('textbox');
-    const button = screen.getByRole('button', { name: /submit/i });
-    const code = screen.getByTestId('code');
-    expect(textarea).toBeInTheDocument();
-    expect(button).toBeInTheDocument();
-    expect(code).toBeInTheDocument();
-  });
-  it('displays transpiled code', () => {
-    render(<App />);
-    const textarea = screen.getByRole('textbox');
-    const button = screen.getByRole('button', { name: /submit/i });
-    const code = screen.getByTestId('code');
+  page = await browser.newPage();
 
-    userEvent.type(textarea, '() =>  "hello"');
-    userEvent.click(button);
+  await page.goto('http://localhost:3000');
+}, 30_000);
 
-    expect(code.textContent).toBe('hello');
+describe('App', () => {
+  it('finds the button, textarea, and code oupt', async () => {
+    await sleep(1_000);
+
+    if (!page) {
+      throw new Error('Error while loading Puppeteer page');
+    }
+
+    // Find elements
+    const btn = await page.$('button');
+    if (!btn) {
+      throw new Error("Can't find the increase counter button");
+    }
+
+    const inputText = await page.$('textarea');
+    if (!inputText) {
+      throw new Error("Can't find the textarea to input code");
+    }
+
+    const code = await page.$('pre');
+    if (!code) {
+      throw new Error("Can't find the textarea to input code");
+    }
+
+    inputText.type('1 + 1');
+    await sleep(250);
+    const inputTextValue = await inputText.evaluate((el) => el.textContent);
+    expect(inputTextValue).toBe('1 + 1');
+
+    btn.click();
+    await sleep(1000);
+
+    let expected = "\"(() => {\\n  // a:index.js\\n  1 + 1;\\n})();\\n\"";
+
+    let codeTextValue: string | null = JSON.stringify(
+      await code.evaluate((el) => el.textContent)
+    );
+    await sleep(250);
+    expect(codeTextValue).toBe(expected);
   });
+
+  afterAll(async () => await browser?.close?.());
 });
