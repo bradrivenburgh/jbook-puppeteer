@@ -15,7 +15,7 @@ beforeAll(async () => {
 	await page.goto("http://localhost:3000")
 }, 30_000)
 
-test("Increments the counter correctly", async () => {
+test.skip("Increments the counter correctly", async () => {
 	await sleep(1_000)
 
 	if (!page) {
