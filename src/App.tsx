@@ -2,6 +2,7 @@ import * as esbuild from 'esbuild-wasm';
 import { useState, useEffect, useRef } from 'react';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugins';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import CodeEditor from './components/code-editor';
 
 const App = () => {
   const [input, setInput] = useState('');
@@ -63,12 +64,18 @@ const App = () => {
 
   return (
     <div>
+      <CodeEditor onChange={(value)=> setInput(value)}initialValue="const hello = 'Hello World;'" />
       <textarea onChange={(e) => setInput(e.target.value)} value={input} />
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      {/* <pre data-testid='code'>{code}</pre> */}
-      <iframe ref={iframe} srcDoc={html} sandbox='allow-scripts' title='codeOutput' name="codeOutput" />
+      <iframe
+        ref={iframe}
+        srcDoc={html}
+        sandbox='allow-scripts'
+        title='codeOutput'
+        name='codeOutput'
+      />
     </div>
   );
 };
