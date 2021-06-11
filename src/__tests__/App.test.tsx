@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 
+jest.setTimeout(100000);
 let browser: puppeteer.Browser | undefined;
 let page: puppeteer.Page | undefined;
 
@@ -16,8 +17,8 @@ beforeAll(async () => {
 }, 30_000);
 
 describe('App', () => {
-  it('finds the button, textarea, and code oupt', async () => {
-    await sleep(1_000);
+  it('finds the button, textarea, and code output', async () => {
+    await sleep(1000);
 
     if (!page) {
       throw new Error('Error while loading Puppeteer page');
@@ -34,25 +35,26 @@ describe('App', () => {
       throw new Error("Can't find the textarea to input code");
     }
 
-    const code = await page.$('pre');
-    if (!code) {
-      throw new Error("Can't find the textarea to input code");
+    const codeOutput = await page.$('iframe');
+    if (!codeOutput) {
+      throw new Error("Can't find the code output");
     }
 
-    inputText.type('1 + 1');
-    await sleep(1000);
+    inputText.type(
+      `document.querySelector('#root').innerHTML = 'Hello World';`
+    );
+    await sleep(4000);
     const inputTextValue = await inputText.evaluate((el) => el.textContent);
-    expect(inputTextValue).toBe('1 + 1');
+    expect(inputTextValue).toBe(`document.querySelector('#root').innerHTML = 'Hello World';`);
 
     btn.click();
-    await sleep(1000);
+    await sleep(2000);
 
-    let expected = '"(() => {\\n  // a:index.js\\n  1 + 1;\\n})();\\n"';
-    let codeTextValue: string | null = JSON.stringify(
-      await code.evaluate((el) => el.textContent)
-    );
-    await sleep(500);
-    expect(codeTextValue).toBe(expected);
+    let expected = 'Hello World';
+    const frame = await codeOutput.contentFrame();
+    const frameContent = await frame?.content();
+
+   expect(frameContent?.includes(expected)).toBe(true);
   });
 
   afterAll(async () => await browser?.close?.());
