@@ -56,8 +56,9 @@ describe('App', () => {
     let expected = 'Hello World';
     const frame = await codeOutput.contentFrame();
     const frameContent = await frame?.content(); // Get html of iframe
-
-    expect(frameContent?.includes(expected)).toBe(true);
+    
+    // Search iframe content for expected string
+    expect(frameContent?.includes(expected)).toBe(true); 
   });
 
   afterAll(async () => await browser?.close?.());
