@@ -1,3 +1,4 @@
+import 'bulmaswatch/superhero/bulmaswatch.min.css'
 import * as esbuild from 'esbuild-wasm';
 import { useState, useEffect, useRef } from 'react';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugins';
@@ -68,7 +69,7 @@ const App = () => {
         onChange={(value) => setInput(value)}
         initialValue="document.querySelector('#root').innerHTML = 'Hello World';"
       />
-      <textarea onChange={(e) => setInput(e.target.value)} value={input} />
+      {/* <textarea onChange={(e) => setInput(e.target.value)} value={input} /> */}
       <div>
         <button id='submit' onClick={onClick}>
           Submit
