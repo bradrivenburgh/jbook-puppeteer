@@ -25,13 +25,18 @@ describe('App', () => {
     }
 
     // Find elements
-    const btn = await page.$('button');
-    if (!btn) {
+    const formatBtn = await page.$('#format');
+    if (!formatBtn) {
       throw new Error("Can't find the increase counter button");
     }
 
-    const inputText = await page.$('textarea');
-    if (!inputText) {
+    const submitBtn = await page.$('#submit');
+    if (!submitBtn) {
+      throw new Error("Can't find the increase counter button");
+    }
+
+    const codeEditor = await page.$('.code-editor');
+    if (!codeEditor) {
       throw new Error("Can't find the textarea to input code");
     }
 
@@ -40,21 +45,19 @@ describe('App', () => {
       throw new Error("Can't find the code output");
     }
 
-    inputText.type(
-      `document.querySelector('#root').innerHTML = 'Hello World';`
-    );
-    await sleep(4000);
-    const inputTextValue = await inputText.evaluate((el) => el.textContent);
-    expect(inputTextValue).toBe(`document.querySelector('#root').innerHTML = 'Hello World';`);
+    // codeEditor starts with default value of
+    // "document.querySelector('#root').innerHTML = 'Hello World';"
+    formatBtn.click(); // format the content using Prettier
+    await sleep(250);
 
-    btn.click();
-    await sleep(2000);
+    submitBtn.click(); // transpile and transmit code to iframe
+    await sleep(250);
 
     let expected = 'Hello World';
     const frame = await codeOutput.contentFrame();
-    const frameContent = await frame?.content();
+    const frameContent = await frame?.content(); // Get html of iframe
 
-   expect(frameContent?.includes(expected)).toBe(true);
+    expect(frameContent?.includes(expected)).toBe(true);
   });
 
   afterAll(async () => await browser?.close?.());

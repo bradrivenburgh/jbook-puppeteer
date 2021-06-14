@@ -64,10 +64,15 @@ const App = () => {
 
   return (
     <div>
-      <CodeEditor onChange={(value)=> setInput(value)}initialValue="const hello = 'Hello World;'" />
+      <CodeEditor
+        onChange={(value) => setInput(value)}
+        initialValue="document.querySelector('#root').innerHTML = 'Hello World';"
+      />
       <textarea onChange={(e) => setInput(e.target.value)} value={input} />
       <div>
-        <button onClick={onClick}>Submit</button>
+        <button id='submit' onClick={onClick}>
+          Submit
+        </button>
       </div>
       <iframe
         ref={iframe}
