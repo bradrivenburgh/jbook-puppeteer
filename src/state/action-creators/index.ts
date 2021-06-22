@@ -59,7 +59,7 @@ export const createBundle = (cellId: string, input: string) => {
         cellId,
       },
     });
-
+    
     const result = await bundle(input);
 
     dispatch({
