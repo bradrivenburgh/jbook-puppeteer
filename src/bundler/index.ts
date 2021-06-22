@@ -21,14 +21,14 @@ const bundle = async (rawCode: string) => {
         'process.env.NODE_ENV': '"production"', // define variable as "production" str
         global: 'window', // replace instances of 'global' var with 'window' var (browser global)
       },
+      jsxFactory: '_React.createElement',
+      jsxFragment: '_React.Fragment',
     });
     return {
       code: result.outputFiles[0].text,
       err: '',
     };
-  } 
-  
-  catch (err) {
+  } catch (err) {
     return {
       code: '',
       err: err.message,
